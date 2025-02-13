@@ -1,0 +1,130 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+
+export default function BirthdayPage() {
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+  const [images, setImages] = useState([]);
+  const [video, setVideo] = useState(null);
+  const [editableText, setEditableText] = useState("Querida [nombre de tu novia],\nHoy celebro no solo tu cumpleaños, sino también la dicha de tenerte en mi vida. Eres mi alegría, mi paz y mi inspiración. Te amo más de lo que las palabras pueden expresar. 💕🎈🎂");
+  const [lovedOnesMessages, setLovedOnesMessages] = useState([]);
+  const [newLovedOneMessage, setNewLovedOneMessage] = useState("");
+  const [lovedOnesImages, setLovedOnesImages] = useState([]);
+
+  const handleAddMessage = () => {
+    if (newMessage.trim() !== "") {
+      setMessages([...messages, newMessage]);
+      setNewMessage("");
+    }
+  };
+
+  const handleImageUpload = (event, setImageState) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImageState(prevImages => [...prevImages, e.target.result]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleVideoUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setVideo(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddLovedOneMessage = () => {
+    if (newLovedOneMessage.trim() !== "") {
+      setLovedOnesMessages([...lovedOnesMessages, newLovedOneMessage]);
+      setNewLovedOneMessage("");
+    }
+  };
+
+  return (
+    <div className="relative min-h-screen bg-gradient-to-r from-blue-100 to-purple-200 p-4 text-center font-sans">
+      <motion.h1
+        className="text-6xl font-extrabold text-gray-800 drop-shadow-xl mt-10"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        🎉 ¡Feliz Cumpleaños, mi gran amor! 🎂💖
+      </motion.h1>
+
+      <header className="mb-8 mt-10">
+        <motion.p
+          className="text-lg text-gray-700 mt-2 italic"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2 }}
+        >
+          Esta página está dedicada a ti con todo mi amor 💕🎁
+        </motion.p>
+      </header>
+
+      <section className="mt-10">
+        <h2 className="text-3xl font-bold text-gray-800">📸 Comparte tus recuerdos</h2>
+        <textarea
+          className="w-full p-2 mt-4 border rounded-md"
+          placeholder="Escribe un mensaje especial..."
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+        ></textarea>
+        <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setImages)} className="mt-4" />
+        <Button className="mt-4" onClick={handleAddMessage}>Añadir Recuerdo</Button>
+        <div className="mt-6">
+          {messages.map((msg, index) => (
+            <Card key={index} className="p-4 mt-2">
+              <CardContent>{msg}</CardContent>
+            </Card>
+          ))}
+          {images.map((img, index) => (
+            <img key={index} src={img} alt="Recuerdo" className="mt-4 w-full rounded-lg shadow-md" />
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <h2 className="text-3xl font-bold text-gray-800">💌 Mensajes de tus seres queridos</h2>
+        <textarea
+          className="w-full p-2 mt-4 border rounded-md"
+          placeholder="Escribe un mensaje especial..."
+          value={newLovedOneMessage}
+          onChange={(e) => setNewLovedOneMessage(e.target.value)}
+        ></textarea>
+        <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setLovedOnesImages)} className="mt-4" />
+        <Button className="mt-4" onClick={handleAddLovedOneMessage}>Añadir Mensaje</Button>
+        <div className="mt-6">
+          {lovedOnesMessages.map((msg, index) => (
+            <Card key={index} className="p-4 mt-2">
+              <CardContent>{msg}</CardContent>
+            </Card>
+          ))}
+          {lovedOnesImages.map((img, index) => (
+            <img key={index} src={img} alt="Mensaje de ser querido" className="mt-4 w-full rounded-lg shadow-md" />
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <h2 className="text-3xl font-bold text-gray-800">🎥 Video Especial</h2>
+        <input type="file" accept="video/*" onChange={handleVideoUpload} className="mt-4" />
+        {video && (
+          <video controls className="mt-4 w-full rounded-lg shadow-md">
+            <source src={video} type="video/mp4" />
+            Tu navegador no soporta la reproducción de videos.
+          </video>
+        )}
+      </section>
+    </div>
+  );
+}
